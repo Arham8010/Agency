@@ -33,7 +33,13 @@ export async function generateMarketingAudit(brandName: string, niche: string, g
       }
     });
 
-    return JSON.parse(response.text.trim());
+    const text = response.text;
+
+if (!text) {
+  throw new Error("Empty response from Gemini");
+}
+
+return JSON.parse(text);
   } catch (error) {
     console.error("Gemini Audit Error:", error);
     throw error;
