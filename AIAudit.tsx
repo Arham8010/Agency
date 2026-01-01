@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { generateMarketingAudit } from '../services/geminiService';
-import { AuditResult } from '../types';
+import { generateMarketingAudit } from './geminiService';
+import { AuditResult } from './types';
 
 const AIAudit: React.FC = () => {
   const [loading, setLoading] = useState(false);
