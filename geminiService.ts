@@ -1,32 +1,36 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY as string
+});
 
-export async function generateMarketingAudit(brandName: string, niche: string, goals: string) {
+export async function generateMarketingAudit(
+  brandName: string,
+  niche: string,
+  goals: string
+) {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `You are a world-class growth marketing consultant for Elevate Creatives agency. 
-                 Analyze this brand and provide a high-level growth strategy that highlights our "Agentic AI" capabilities.
-                 Brand: ${brandName}
-                 Niche: ${niche}
-                 Current Goals: ${goals}
-                 
-                 Your recommendations should include how autonomous AI agents can improve their specific business operations.`,
+      contents: `
+You are a growth marketing expert.
+
+Brand: ${brandName}
+Niche: ${niche}
+Goals: ${goals}
+      `,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            headline: { type: Type.STRING, description: "A catchy headline for the audit" },
-            summary: { type: Type.STRING, description: "Professional executive summary" },
+            headline: { type: Type.STRING },
+            summary: { type: Type.STRING },
             recommendations: {
               type: Type.ARRAY,
-              items: { type: Type.STRING },
-              description: "3-5 high-impact actionable recommendations focusing on Agentic AI and Performance"
+              items: { type: Type.STRING }
             },
-            projectedGrowth: { type: Type.STRING, description: "A percentage range of projected growth with Elevate's help" }
+            projectedGrowth: { type: Type.STRING }
           },
           required: ["headline", "summary", "recommendations", "projectedGrowth"]
         }
@@ -35,11 +39,12 @@ export async function generateMarketingAudit(brandName: string, niche: string, g
 
     const text = response.text;
 
-if (!text) {
-  throw new Error("Empty response from Gemini");
-}
+    if (!text) {
+      throw new Error("Empty response from Gemini");
+    }
 
-return JSON.parse(text);
+    return JSON.parse(text);
+
   } catch (error) {
     console.error("Gemini Audit Error:", error);
     throw error;
